@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int& filename_length = 4096;
+const size_t filename_length = 4096;
 
 //#define _MY_DEBUG
 
@@ -43,13 +43,16 @@ void    parseFile(const std::string& filename, std::ofstream& ofs)
         std::getline(ifs, referenced);
 
         unsigned int index = referenced.find("](");
-
-        if (index != std::string::npos)
+        unsigned int end_of_filename = referenced.find(".md)");
+ 
+        // TODO : two or more file in one line
+        if (index != std::string::npos && end_of_filename != std::string::npos)
         {
             index += 2;
+            end_of_filename += 3;
             if (referenced[index] != '/')
                 return;
-            referenced = referenced.substr(index, referenced.size() - index - 1);
+            referenced = referenced.substr(index, end_of_filename - index);
 
             std::cout << "| [" << relative_path << "](" << relative_path << \
                 ") | [" << referenced << "](" << referenced << ") | \n";
@@ -138,6 +141,7 @@ int     main()
         cerr << "Fail to open output file\n";
         return 1;
     }
+    ofs << "|Referencing|Referenced|\n|:-:|:-:|\n";
 
     getPath(path);
 
